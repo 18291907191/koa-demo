@@ -1,0 +1,8 @@
+[2020-12-02T18:28:32.218] [ERROR] [Default] - Error: MongoNetworkError: failed to connect to server [127.0.0.1:27017] on first connect [Error: connect ECONNREFUSED 127.0.0.1:27017
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) {
+  name: 'MongoNetworkError'
+}]
+    at NativeConnection.<anonymous> (F:\koa\models\index.js:17:18)
+    at NativeConnection.emit (events.js:315:20)
+    at F:\koa\node_modules\mongoose\lib\connection.js:841:37
+    at processTicksAndRejections (internal/process/task_queues.js:79:11)

@@ -1,21 +1,31 @@
-const Koa = require('koa');
-const app = new Koa();
+'use strict'
 
-app.use(async (ctx, next) => {
-  await next();
-  const rt = ctx.response.get('X-Response-Time');
-  console.log(`${ctx.method} ${ctx.url} - ${rt}`);
-});
+const Koa = require('koa')
+const bodyParser = require('koa-bodyparser')()
+const staticCache = require('koa-static-cache')
 
-app.use(async (ctx, next) => {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  ctx.set('X-Response-Time', `${ms}ms`);
-});
+const config = require('./config')
+const publicRouter = require('./routes/public')
+// const privateRouter = require('./routes/private')
+const { loggerMiddleware } = require('./middlewares/logger')
+const { errorHandler, responseHandler } = require('./middlewares/response')
+const app = new Koa()
 
-app.use(ctx => {
-  ctx.body = 'Hello Koa';
-});
+// Logger
+app.use(loggerMiddleware)
 
-app.listen(3000);
+// Error Handler
+app.use(errorHandler)
+
+// Global Middlewares
+app.use(bodyParser)
+app.use(staticCache(config.publicDir))
+
+// Routes
+app.use(publicRouter.routes(), publicRouter.allowedMethods())
+// app.use(privateRouter.routes(), privateRouter.allowedMethods())
+
+// Response
+app.use(responseHandler)
+
+module.exports = app
